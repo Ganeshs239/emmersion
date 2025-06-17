@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Product Search</title>
+  <style>
+    #container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-top: 20px;
+    }
+    #container div {
+      padding: 10px;
+      width: 220px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Product Search</h1>
+  <input type="text" id="inp" placeholder="Enter product name">
+  <button id="btn">Search</button>
+
+  <div id="container"></div>
+
+  <script>
+    const btn = document.getElementById('btn');
+    const temurl = 'https://dummyjson.com/products/search?q=';
+    const inp = document.getElementById('inp');
+    const Container = document.getElementById('container');
+
+    btn.addEventListener('click', () => {
+      const url = temurl + inp.value;
+
+      // Clear previous results
+      Container.innerHTML = '';
+
+      fetch(url)
+        .then((res) => res.json())
+        .then((data) => {
+          for (let product of data.products) { // Fixed: `products` not `product`
+            console.log(product);
+            const productElem = document.createElement('div');
+            productElem.style.border = "2px solid black";
+
+            const h2 = document.createElement('h2');
+            h2.innerText = product.title;
+
+            const img = document.createElement('img');
+            img.setAttribute('src', product.images[0]);
+            img.style.width = "200px";
+
+            const para = document.createElement('p');
+            para.innerText = `Price: $${product.price}`;
+
+            productElem.append(h2, img, para);
+            Container.append(productElem);
+          }
+        })
+        .catch((error) => {
+          console.error('Error fetching products:', error);
+        });
+    });
+  </script>
+
+</body>
+</html>
